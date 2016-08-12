@@ -6,7 +6,6 @@ RUN apk --update add curl \
 WORKDIR /opt/riemann
 RUN sed -ie 's/env bash/env sh/' bin/riemann
 RUN mkdir -p /opt/riemann/etc
-ADD src/ /opt/riemann/etc
 
 EXPOSE 5555 5555/udp 5556
 
