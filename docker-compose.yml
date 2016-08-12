@@ -1,5 +1,6 @@
 influxdb:
     image: tutum/influxdb:0.12
+    container_name: influxdb
     environment:
       PRE_CREATE_DB: "riemann-local"
       INFLUXDB_INIT_PWD: password
@@ -9,10 +10,13 @@ influxdb:
 
 riemann:
     build: riemann
+    container_name: riemann
     ports:
       - "5555:5555"
       - "5555:5555/udp"
       - "5556:5556"
+    volumes:
+        - "./riemann/src/:/opt/riemann/etc/"
     links:
         - influxdb
     environment: 
@@ -22,11 +26,17 @@ riemann:
       RIEMANN_INFLUXDB_PASSWORD: password
 
 collectd:
+    container_name: collectd
     build: collectd
+    volumes:
+        - "./collectd/root/etc/collectd/:/etc/collectd/"
+        - "./collectd/root/etc/collectd.d/:/etc/collectd.d/"
+        - "/proc:/mnt/proc:ro"
     links:
         - riemann
 
 grafana:
+    container_name: grafana
     image: grafana/grafana:3.1.0-beta1
     ports:
         - "3001:3000"
