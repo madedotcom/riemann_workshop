@@ -1,0 +1,36 @@
+influxdb:
+    image: tutum/influxdb:0.12
+    environment:
+      PRE_CREATE_DB: "riemann-local"
+      INFLUXDB_INIT_PWD: password
+    ports:
+        - "8083:8083"
+        - "8086:8086"
+
+riemann:
+    build: riemann
+    ports:
+      - "5555:5555"
+      - "5555:5555/udp"
+      - "5556:5556"
+    links:
+        - influxdb
+    environment: 
+      RIEMANN_INFLUXDB_DBHOST: influxdb
+      RIEMANN_INFLUXDB_DBNAME: "riemann-local"
+      RIEMANN_INFLUXDB_USER: root
+      RIEMANN_INFLUXDB_PASSWORD: password
+
+collectd:
+    build: collectd
+    links:
+        - riemann
+
+grafana:
+    image: grafana/grafana:3.1.0-beta1
+    ports:
+        - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: "password"
+    links:
+        - influxdb
