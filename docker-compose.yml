@@ -31,6 +31,7 @@ collectd:
     volumes:
         - "./collectd/root/etc/collectd/:/etc/collectd/"
         - "./collectd/root/etc/collectd.d/:/etc/collectd.d/"
+        - "./collectd/root/opt//python_plugins/:/opt/python_plugins/"
         - "/proc:/mnt/proc:ro"
     links:
         - riemann

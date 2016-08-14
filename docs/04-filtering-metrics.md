@@ -18,22 +18,18 @@ Test that by changing your streams declaration like this:
 
 Reload the riemann config and use the python container to send a metric with the service "myservice".
 
-To filter out the NaN metrics, we need to use the `where*` function - this takes a function rather than a confition. There is a function named "is-nan?" in the file riemann/src/made/util.clj that we can use as a filter.
+
+To filter out the NaN metrics, we need to use the `where*` function - this takes a function rather than a confition. There is a function named "is-not-nan?" in the file riemann/src/made/util.clj that we can use as a filter.
 
 '''
 (streams
-    (where* is-nan?
+    (where* is-not-nan?
         prn))
 '''
 
 
-This function returns true if the metric value of an event is NaN, otherwise false. To reverse that logic, we need the clojure function `complement`. Complement returns the inverse of a predicate, if a f(x) returns True, then complement(f)(x) returns False.
+This function returns false if the metric value of an event is NaN, otherwise true. To avoid NullReference errors, we first ignore nil values.
 
-```
-(streams
-    (where * (complement is-nan?)
-        prn))
-```
 
 reload the riemann config and collectd config and check that you are no longer seeing NaN events.
 

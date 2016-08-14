@@ -46,7 +46,7 @@ Open riemann.config and at the top add `(require '[made.influxdb :refer [influx]
 Now you can use your stream in the streams declaration. Most streams, including `where*` accept a list of other streams so you can just add influx to the list.
 
 (streams
-    (where* (complement is-nan?)
+    (where* is-not-nan?
         prn
         influx))
 

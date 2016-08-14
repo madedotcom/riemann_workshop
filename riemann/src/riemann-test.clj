@@ -1,4 +1,5 @@
 (include "riemann.config")
+(require '[made.util :refer [is-not-nan?]])
 
 ; Riemann offers two helpful functions for unit testing.
 ; The first is `tap`. The tap function records all the events that
@@ -26,7 +27,7 @@
 
 (tests
       ;; deftest starts a new unit test.
-       (deftest true-is-truthy
+       (deftest true-is-true
 
           ; the `is` function performs an assertion.
           ; in this case, we're just testing that true == true.
@@ -57,12 +58,16 @@
          ;
          ; returns the list [{:service "myservice" :metric Double/NaN}]
 
+
+         ; e is just an event to play with
          (def e {
-                        :service "myservice"
-                        :metric 23
-                        :host "localhost"
-                        :state "ok"
-                        })
+                  :service "myservice" 
+                  :metric 23
+                  :host "localhost"
+                  :state "ok"
+                  :ttl 10
+                  :time 0
+                  })
 
           ; Here we inject a single event into riemann and check that it ends up in a tap
           ; named influx.
@@ -74,8 +79,7 @@
                [e]
           )))
 
-  ; complete the definition of this test and make it pass    
-  ; your injected event can have a metric of nil or Double/NaN
+  ; Complete the definition of this test and make it pass.
+  ; Your injected event should have a metric of Double/NaN
   (deftest nan-metrics-do-not-arrive-in-influx)
-
 )

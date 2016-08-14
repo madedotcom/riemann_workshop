@@ -1,7 +1,7 @@
 (ns made.util)
 
-(defn is-nan?
+(defn is-not-nan?
      [event]
-     (and
-       (not (nil? (:metric event)))
-       (Double/isNaN (:metric event))))
+     (or
+       (nil? (:metric event))
+       (not (Double/isNaN (:metric event)))))

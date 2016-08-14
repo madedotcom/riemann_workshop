@@ -69,7 +69,7 @@ RUN \
 
     # Install
     && tar xvfz /tmp/s6-overlay-amd64.tar.gz -C / && rm -rf /tmp/*
-RUN apt-get install python-psutil
+RUN apt-get install python-psutil python-numpy -y
 ADD root /
 
 ENTRYPOINT ["/init"]
