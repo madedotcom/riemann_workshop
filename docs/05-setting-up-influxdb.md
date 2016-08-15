@@ -2,7 +2,7 @@
 
 At this point we have metrics writing to the console, but we're yet to do anything interesting with them. Let's set up influxdb, and then graph some metrics.
 
-Influxdb should already be running, you can verify that by opening http://localhost:8083
+Influxdb should already be running, you can verify that by opening [http://localhost:8083](http://localhost:8083)
 
 To get our metrics into Riemann, we're going to create a new stream and use it in our config.
 
