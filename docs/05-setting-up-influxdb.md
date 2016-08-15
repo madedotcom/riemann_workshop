@@ -14,7 +14,7 @@ Create a new file named influxdb.clj in riemann/src/made.
 ; riemann already ships with support for influxdb, so we just need to require the function
 (require '[riemann.influxdb :refer [influxdb]])
 (require '[riemann.streams :refer [batch]])
-
+(require '[riemann.test :refer [tap io]])
 
 ; here we set up an associative array that contains our configuration
 ; the (def) special form declares a variable; (def name value).
