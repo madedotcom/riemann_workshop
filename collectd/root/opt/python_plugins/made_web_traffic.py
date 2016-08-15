@@ -1,6 +1,6 @@
 import collectd
 from numpy.random import poisson, normal, choice
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, namedtuple
 
 """
 This collectd plugin provides a crappy model of a busy-ish e-commerce site
@@ -15,6 +15,12 @@ The site has 4 different means of payment.
 The probabilities for those things are all enumerated below.
 """
 
+payment_provider = namedtuple('pp',
+                    ['id',
+                     'popularity',
+                     'user_error_rate',
+                     'error_rate',
+                     'fraud_rate'])
 
 # This is the interval on which collectd calls us, used to extrapolate
 # the per-second event rates.
@@ -47,19 +53,15 @@ asset_latency_stddev = 1
 page_hits_per_sec = 11.5
 asset_hits_per_sec = 100
 new_users_per_sec = 2.4
-sales_per_sec = 0.012
+sales_per_sec = 100 #0.012
 
-# The likelihoods that a customer chooses payment provider x
-provider_1_weight = 0.4
-provider_2_weight = 0.3
-provider_3_weight = 0.1
-provider_4_weight = 0.2
-
-# The likelihood of various kinds of failure.
-user_error_rate = 0.01
-provider_error_rate = 0.001
-fraud_detector_rate = 0.003
-payment_success_rate = (1 - user_error_rate - provider_error_rate - fraud_detector_rate)
+# code, popularity, user error probability, provider failure rate, fraud rate
+providers = {
+    'a': payment_provider('a', 0.4, 0.01, 0.001, 0.3),
+    'b': payment_provider('b', 0.3, 0.01, 0.001, 0.003),
+    'c': payment_provider('c', 0.1, 0.01, 0.001, 0.003),
+    'd': payment_provider('d', 0.2, 0.01, 0.001, 0.003)
+}
 
 def get_page_latency():
     return normal(page_latency_mean, page_latency_stddev, 1)[0]
@@ -88,6 +90,14 @@ def send_counter(name, val):
                     type_instance=name,
                     values=[ctr_vals[name]]).dispatch()
 
+def calculate_payment_results(count, provider):
+    success_rate = 1 - (provider.user_error_rate
+                        + provider.error_rate
+                        + provider.fraud_rate)
+    return get_outcomes(count,
+        ["success", "user_error", "provider_error", "fraud"],
+        [success_rate, provider.user_error_rate, provider.error_rate, provider.fraud_rate])
+
 def read():
     num_new_users = get_event_count(new_users_per_sec)
     num_sales = get_event_count(sales_per_sec)
@@ -95,24 +105,13 @@ def read():
     num_asset_hits = get_event_count(asset_hits_per_sec)
 
     payment_providers = get_outcomes(num_sales,
-        ["provider-a", "provider-b", "provider-c", "provider-d"],
-        [provider_1_weight, provider_2_weight, provider_3_weight, provider_4_weight])
+        providers.keys(),
+        [providers[p].popularity for p in providers.keys()])
 
-    provider_a = get_outcomes(payment_providers["provider-a"],
-        ["success", "user_error", "provider_error", "fraud"],
-        [payment_success_rate, user_error_rate, provider_error_rate, fraud_detector_rate])
-
-    provider_b = get_outcomes(payment_providers["provider-b"],
-        ["success", "user_error", "provider_error", "fraud"],
-        [payment_success_rate, user_error_rate, provider_error_rate, fraud_detector_rate])
-
-    provider_c = get_outcomes(payment_providers["provider-c"],
-        ["success", "user_error", "provider_error", "fraud"],
-        [payment_success_rate, user_error_rate, provider_error_rate, fraud_detector_rate])
-
-    provider_d = get_outcomes(payment_providers["provider-d"],
-        ["success", "user_error", "provider_error", "fraud"],
-        [payment_success_rate, user_error_rate, provider_error_rate, fraud_detector_rate])
+    provider_a = calculate_payment_results(payment_providers["a"], providers["a"])
+    provider_b = calculate_payment_results(payment_providers["b"], providers["b"])
+    provider_c = calculate_payment_results(payment_providers["c"], providers["c"])
+    provider_d = calculate_payment_results(payment_providers["d"], providers["d"])
 
     page_results = get_outcomes(num_page_hits,
         ["200", "400", "500"],
