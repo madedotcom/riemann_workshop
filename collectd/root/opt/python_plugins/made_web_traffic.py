@@ -1,6 +1,6 @@
 import collectd
 from numpy.random import poisson, normal, choice
-from collections import Counter
+from collections import Counter, defaultdict
 
 """
 This collectd plugin provides a crappy model of a busy-ish e-commerce site
@@ -73,11 +73,20 @@ def get_event_count(rate):
 def get_outcomes(count, outcomes, weights):
     return Counter(choice(outcomes, count, p=weights))
 
-def send(name, val):
+def send_gauge(name, val):
     collectd.Values(plugin="ecommerce",
                     type="gauge",
                     type_instance=name,
                     values=[val]).dispatch()
+
+ctr_vals = defaultdict(int)
+
+def send_counter(name, val):
+    ctr_vals[name] += val
+    collectd.Values(plugin="ecommerce",
+                    type="counter",
+                    type_instance=name,
+                    values=[ctr_vals[name]]).dispatch()
 
 def read():
     num_new_users = get_event_count(new_users_per_sec)
@@ -113,30 +122,30 @@ def read():
         ["200", "400", "500"],
         [asset_200_wt, asset_400_wt, asset_500_wt])
 
-    send("new-sessions", num_new_users)
+    send_counter("new-sessions", num_new_users)
 
     for k,v in provider_a.items():
-        send("payment-provider-a."+k, v)
+        send_counter("payment-provider-a."+k, v)
     for k,v in provider_b.items():
-        send("payment-provider-b."+k, v)
+        send_counter("payment-provider-b."+k, v)
     for k,v in provider_c.items():
-        send("payment-provider-c."+k, v)
+        send_counter("payment-provider-c."+k, v)
     for k,v in provider_d.items():
-        send("payment-provider-d."+k, v)
+        send_counter("payment-provider-d."+k, v)
 
-    send("page-latency.mean", get_page_latency())
-    send("asset-latency.mean", get_asset_latency())
-    send("page-hits-total", sum(page_results.values()))
-    send("asset-hits-total", sum(asset_results.values()))
+    send_gauge("page-latency.mean", get_page_latency())
+    send_gauge("asset-latency.mean", get_asset_latency())
+    send_counter("page-hits-total", sum(page_results.values()))
+    send_counter("asset-hits-total", sum(asset_results.values()))
 
     for k,v in page_results.items():
-        send("page-response-code-"+k, v)
+        send_counter("page-response-code-"+k, v)
 
     for k,v in asset_results.items():
-        send("asset-response-code-"+k, v)
+        send_counter("asset-response-code-"+k, v)
 
 
 def config(c):
-    print "Hello!"
+    pass
 
 collectd.register_read(read)
