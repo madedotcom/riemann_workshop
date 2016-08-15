@@ -41,7 +41,7 @@ In the metrics tab click "select measurement" to choose one of your cpu metrics,
 
 Change the time period in the upper right to "Last 15 mins" and set refresh to every 10 secs.
 
-Grafana and Influx allow you to select metrics by regular expression. Change the measurement to `/aggregate-cpu-average\/*/`. You should see all the aggregate-cpu-average metrics appear on your graph.
+Grafana and Influx allow you to select metrics by regular expression. Change the measurement to `/aggregation-cpu-average\/*/`. You should see all the aggregate-cpu-average metrics appear on your graph.
 
 In the axes tab change the Left-Y axis's Unit dropdown to "None > percent (0 - 100)".
 
