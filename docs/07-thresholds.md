@@ -8,7 +8,7 @@ Open the file /riemann/src/riemann-test.clj and read the carefully considered co
 
 There are two tests in the file that need to be completed. 
 
-You can run your unit tests with with run_tests.sh script in the root of the project.
+You can run your unit tests with run_tests.sh script in the root of the project.
 
 
 When you first run the tests you should see the following output
