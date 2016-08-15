@@ -43,7 +43,7 @@ Change the time period in the upper right to "Last 15 mins" and set refresh to e
 
 Grafana and Influx allow you to select metrics by regular expression. Change the measurement to `/aggregate-cpu-average\/*/`. You should see all the aggregate-cpu-average metrics appear on your graph.
 
-In the display tab change the Left-Y axis's Unit dropdown to "None > percent (0 - 100)".
+In the axes tab change the Left-Y axis's Unit dropdown to "None > percent (0 - 100)".
 
 You can display multiple metrics on a single graph, which is great for showing, for example, throughput vs latency, or CPU usage versus incoming web requests.
 
