@@ -51,7 +51,7 @@ In the Metrics tab, Click "Add query" and set the measurement to "load/load/shor
 
 Unfortunately for us, load has a different scale from cpu usage. You can check this by navigating to the influxdb admin page and running the following queries:
 
-'SELECT * from "aggregation-cpu-average/cpu-user' (values are between 0 and 100)
+'SELECT * from "aggregation-cpu-average/cpu-user"' (values are between 0 and 100)
 'SELECT * from "load/load/shortterm"' (values are between 0 and 1)
 
 To display it properly, we'll need to move it to the other axis. In grafana click "Display" then "Add Series Specific Option". For "alias or regex" type load and select "load/load/shortterm".
