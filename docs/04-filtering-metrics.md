@@ -21,11 +21,11 @@ Reload the riemann config and use the python container to send a metric with the
 
 To filter out the NaN metrics, we need to use the `where*` function - this takes a function rather than a condition. There is a function named "is-not-nan?" in the file riemann/src/made/util.clj that we can use as a filter.
 
-'''
+```
 (streams
     (where* is-not-nan?
         prn))
-'''
+```
 
 
 This function returns false if the metric value of an event is NaN, otherwise true. To avoid NullReference errors, we first ignore nil values.
