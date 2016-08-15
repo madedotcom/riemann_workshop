@@ -69,7 +69,7 @@ You should now see that the graph is showing the total breakdown of memory use o
 
 Cumulative graphs like this are handy for showing breakdowns; eg web requests by http response codes or varnish hit/miss status.
 
-In the lower right is a button marked "Add row". Click it, and you'll have a second green tab at the left of the screen. Create a new graph for network statistics. Use a regular expression to show the if_octets/tx and if_octets/rx for every interface. Select an appropriate unit of measurement in the display tab remembering that octet is network-speak for "byte".
+In the lower right is a button marked "Add row". Click it, and you'll have a second green tab at the left of the screen. Create a new graph for network statistics. Use a regular expression to show the if_octets/tx and if_octets/rx for every interface. Select an appropriate unit of measurement in the axes tab remembering that octet is network-speak for "byte".
 
 
 Add another row and add some metrics for riemann, showing the throughput of events vs the 95th percentile latency. Since the network graph is showing the network traffic of the collectd container, you should notice a nice correlation between "riemann server tcp in rate" and "if_octets/tx".
