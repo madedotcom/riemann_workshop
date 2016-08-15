@@ -34,7 +34,7 @@ Data source is working"
 
 Click the grafana logo again, and then Dashboards > New.
 
-There is a green tab to the left of the screen, click on that to add a new panel. 
+There is a green tab to the left of the screen, click on that to add a new graph panel. 
 
 In the general section, change the title to "CPU".
 In the metrics tab click "select measurement" to choose one of your cpu metrics, you should see it appear on the graph.
