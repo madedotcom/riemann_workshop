@@ -104,14 +104,14 @@ def read():
     num_page_hits = get_event_count(page_hits_per_sec)
     num_asset_hits = get_event_count(asset_hits_per_sec)
 
-    payment_providers = get_outcomes(num_sales,
+    payment_counts = get_outcomes(num_sales,
         providers.keys(),
         [providers[p].popularity for p in providers.keys()])
 
-    provider_a = calculate_payment_results(payment_providers["a"], providers["a"])
-    provider_b = calculate_payment_results(payment_providers["b"], providers["b"])
-    provider_c = calculate_payment_results(payment_providers["c"], providers["c"])
-    provider_d = calculate_payment_results(payment_providers["d"], providers["d"])
+    provider_results = {
+        k: calculate_payment_results(payment_counts[k], providers[k])
+        for k in providers.keys()
+    }
 
     page_results = get_outcomes(num_page_hits,
         ["200", "400", "500"],
@@ -123,14 +123,9 @@ def read():
 
     send_counter("new-sessions", num_new_users)
 
-    for k,v in provider_a.items():
-        send_counter("payment-provider-a."+k, v)
-    for k,v in provider_b.items():
-        send_counter("payment-provider-b."+k, v)
-    for k,v in provider_c.items():
-        send_counter("payment-provider-c."+k, v)
-    for k,v in provider_d.items():
-        send_counter("payment-provider-d."+k, v)
+    for id, result in provider_results.items():
+        for outcome, freq in result.items():
+            send_counter("payment-provider-"+id+"."+outcome, freq)
 
     send_gauge("page-latency.mean", get_page_latency())
     send_gauge("asset-latency.mean", get_asset_latency())

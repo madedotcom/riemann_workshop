@@ -40,7 +40,7 @@ to record the response times in milliseconds.
 
 2. Trip an alert if there is a spike in latency. To achieve this you can use the moving-window function, and the folds/stddev function. If the stddev changes by more than some threshold value, raise a critical alert. You can test this by changing the standard deviation of the latency in the collectd plugin, or (even better) by writing some unit tests.
 
-3. Trip an alert if there is a sudden spike in traffic volume. 
+3. Trip an alert if there is a sudden spike in traffic volume; consider what might count as a dangerously high load: 30% increase in 10 minutes? Doubling in 5 minutes? 
 
 4. Trip an alert if the percentage of failed requests (400 + 500) goes above 10% in any single 5 minute period.
 
@@ -63,7 +63,7 @@ We also raise the count of new sessions with the event
 
     ecommerce/new-sessions
 
-1. Calculate the conversion rate by hour, by dividing the new sessions by total successful payments.
+1. Calculate the conversion rate by hour, by dividing the new sessions by total successful payments. Raise a new event from inside riemann to record the conversion rate, so that we can graph it.
 
 2. Trip an alert if there are more than X fraud errors in a single 1 hour window.
 
