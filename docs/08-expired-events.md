@@ -16,7 +16,7 @@ Change your streams declaration to look like this:
         ; keep events for 30 secs by default
         (default {:ttl 30 } 
         ; stick it in the index
-        index
+        (index)
         ; raise any alerts
         threshold-and-alert
         ; send it to influx
